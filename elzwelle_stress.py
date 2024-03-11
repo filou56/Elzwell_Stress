@@ -1,16 +1,16 @@
 import configparser
-import gc
-import os
+# import gc
+# import os
 import platform
 import time
-import io
+#import io
 import csv
-import traceback
+#import traceback
 import uuid
 import paho.mqtt.client as paho
 import tksheet
 
-from   os.path import normpath
+#from   os.path import normpath
 from   paho    import mqtt
 
 # setting callbacks for different events to see if it works, print the message etc.
@@ -137,7 +137,8 @@ if __name__ == '__main__':
         if config.getboolean('mqtt','tls_enabled'):
             mqtt_client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
         # set username and password
-        mqtt_client.username_pw_set(config.get('mqtt','user'),
+        if config.getboolean('mqtt','auth_enabled'):
+            mqtt_client.username_pw_set(config.get('mqtt','user'),
                                     config.get('mqtt','password'))
         # connect to HiveMQ Cloud on port 8883 (default for MQTT)
         mqtt_client.connect(config.get('mqtt','url'), config.getint('mqtt','port'))
@@ -179,34 +180,34 @@ if __name__ == '__main__':
                 strNr = row[gStartNr]
             print(strNr,row[gTzStartIdx],row[gTzFinishIdx],row[gTor_Idx],row[gTor_Ziel])
             r = r + 1
-            if r > 100:
-                # elzwelle/stopwatch/start 18:12:12 154,06 0
-                # elzwelle/stopwatch/start/number 18:12:12 154,06 1 
-                # elzwelle/stopwatch/start/number/akn 18:12:12 154,06 1
-                mqtt_client.publish("elzwelle/stopwatch/start",
-                                        payload='{:} {:} {:}'.format("10:00:00",row[gTzStartIdx],0), 
-                                        qos=1)
-                time.sleep(1)
-                mqtt_client.publish("elzwelle/stopwatch/start/number",
-                                        payload='{:} {:} {:}'.format("10:00:00",row[gTzStartIdx],strNr), 
-                                        qos=1)
-                time.sleep(1)
-                
-                # elzwelle/stopwatch/course/data 1,1,50,Tor verfehlt 
-                # elzwelle/stopwatch/course/data/akn 1,1,50,Tor verfehlt 
-                for i in range(26):
-                    mqtt_client.publish("elzwelle/stopwatch/course/data",
-                                        payload='{:},{:},{:},Komentar'.format(strNr,i+1,row[gTor_Idx+i]), 
-                                        qos=1)
-                    time.sleep(1)
-                
-                mqtt_client.publish("elzwelle/stopwatch/finish",
-                                        payload='{:} {:} {:}'.format("10:00:00",row[gTzFinishIdx],0), 
-                                        qos=1)
-                time.sleep(1)
-                mqtt_client.publish("elzwelle/stopwatch/finish/number",
-                                        payload='{:} {:} {:}'.format("10:00:00",row[gTzFinishIdx],strNr), 
-                                        qos=1)
-                time.sleep(1)
+            #if r > 100:
+            # elzwelle/stopwatch/start 18:12:12 154,06 0
+            # elzwelle/stopwatch/start/number 18:12:12 154,06 1 
+            # elzwelle/stopwatch/start/number/akn 18:12:12 154,06 1
+            mqtt_client.publish("elzwelle/stopwatch/start",
+                                    payload='{:} {:} {:}'.format("10:00:00",row[gTzStartIdx],0), 
+                                    qos=1)
+            time.sleep(1)
+            # mqtt_client.publish("elzwelle/stopwatch/start/number",
+            #                         payload='{:} {:} {:}'.format("10:00:00",row[gTzStartIdx],strNr), 
+            #                         qos=1)
+            # time.sleep(1)
+            #
+            # # elzwelle/stopwatch/course/data 1,1,50,Tor verfehlt 
+            # # elzwelle/stopwatch/course/data/akn 1,1,50,Tor verfehlt 
+            # for i in range(26):
+            #     mqtt_client.publish("elzwelle/stopwatch/course/data",
+            #                         payload='{:},{:},{:},Komentar'.format(strNr,i+1,row[gTor_Idx+i]), 
+            #                         qos=1)
+            #     time.sleep(1)
+            #
+            # mqtt_client.publish("elzwelle/stopwatch/finish",
+            #                         payload='{:} {:} {:}'.format("10:00:00",row[gTzFinishIdx],0), 
+            #                         qos=1)
+            # time.sleep(1)
+            # mqtt_client.publish("elzwelle/stopwatch/finish/number",
+            #                         payload='{:} {:} {:}'.format("10:00:00",row[gTzFinishIdx],strNr), 
+            #                         qos=1)
+            # time.sleep(1)
             
     
