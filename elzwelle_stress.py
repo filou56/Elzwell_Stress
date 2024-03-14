@@ -187,27 +187,29 @@ if __name__ == '__main__':
             mqtt_client.publish("elzwelle/stopwatch/start",
                                     payload='{:} {:} {:}'.format("10:00:00",row[gTzStartIdx],0), 
                                     qos=1)
+            time.sleep(2)
+            mqtt_client.publish("elzwelle/stopwatch/start/number",
+                                    payload='{:} {:} {:}'.format("10:00:00",row[gTzStartIdx],strNr), 
+                                    qos=1)
             time.sleep(1)
-            # mqtt_client.publish("elzwelle/stopwatch/start/number",
-            #                         payload='{:} {:} {:}'.format("10:00:00",row[gTzStartIdx],strNr), 
-            #                         qos=1)
-            # time.sleep(1)
-            #
-            # # elzwelle/stopwatch/course/data 1,1,50,Tor verfehlt 
-            # # elzwelle/stopwatch/course/data/akn 1,1,50,Tor verfehlt 
-            # for i in range(26):
-            #     mqtt_client.publish("elzwelle/stopwatch/course/data",
-            #                         payload='{:},{:},{:},Komentar'.format(strNr,i+1,row[gTor_Idx+i]), 
-            #                         qos=1)
-            #     time.sleep(1)
-            #
-            # mqtt_client.publish("elzwelle/stopwatch/finish",
-            #                         payload='{:} {:} {:}'.format("10:00:00",row[gTzFinishIdx],0), 
-            #                         qos=1)
-            # time.sleep(1)
-            # mqtt_client.publish("elzwelle/stopwatch/finish/number",
-            #                         payload='{:} {:} {:}'.format("10:00:00",row[gTzFinishIdx],strNr), 
-            #                         qos=1)
-            # time.sleep(1)
+            
+            # elzwelle/stopwatch/course/data 1,1,50,Tor verfehlt 
+            # elzwelle/stopwatch/course/data/akn 1,1,50,Tor verfehlt 
+            for i in range(26):
+                if row[gTor_Idx+i] != "":
+                    if int(row[gTor_Idx+i]) != 0:
+                        mqtt_client.publish("elzwelle/stopwatch/course/data",
+                                            payload='{:},{:},{:},Bemerkung'.format(strNr,i+1,row[gTor_Idx+i]), 
+                                            qos=1)
+                        time.sleep(1)
+            
+            mqtt_client.publish("elzwelle/stopwatch/finish",
+                                    payload='{:} {:} {:}'.format("10:00:00",row[gTzFinishIdx],0), 
+                                    qos=1)
+            time.sleep(2)
+            mqtt_client.publish("elzwelle/stopwatch/finish/number",
+                                    payload='{:} {:} {:}'.format("10:00:00",row[gTzFinishIdx],strNr), 
+                                    qos=1)
+            time.sleep(1)
             
     
